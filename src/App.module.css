@@ -93,3 +93,21 @@
 .noTasks strong {
     margin-top: 1rem;
 }
+
+@media (max-width: 768px) {
+    html {
+        font-size: 87.5%;
+    }
+
+    .main header {
+        margin: 1rem;
+    }
+
+    .form {
+        margin: calc(0px - 1.5rem) 1rem 2rem;
+    }
+
+    .tasks, .noTasks {
+        margin: 0 1rem;
+    }
+}

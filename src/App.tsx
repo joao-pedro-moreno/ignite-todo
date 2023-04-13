@@ -1,6 +1,6 @@
 import { Header } from './components/Header'
 import { Task } from './components/Task'
-import { ChangeEvent, FormEvent, useState } from 'react'
+import { ChangeEvent, FormEvent, useEffect, useState } from 'react'
 import { ClipboardText, PlusCircle } from '@phosphor-icons/react'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -17,6 +17,7 @@ interface Tasks {
 export function App() {
   const [tasks, setTasks] = useState<Tasks[]>([])
   const [newTaskText, setNewTaskText] = useState('')
+  const [completedTasksCount, setCompletedTasksCount] = useState(0);
 
   function handleNewTaskChange(event: ChangeEvent<HTMLInputElement>) {
     setNewTaskText(event.target.value)
@@ -46,13 +47,26 @@ export function App() {
     setTasks(taskWithoutDeletedOne)
   }
 
-  const totalOfCompletedTasks = tasks.reduce((counter, obj) => {
-    if (obj.isCompleted === true) counter += 1
-    return counter;
-  }, 0);
+  function updateCompletedTasksCount(id: string, content: string, isCompleted: boolean) {
+    const uniqueTask = tasks.findIndex(task => {
+      return task.id === id
+    })
 
-  console.log(totalOfCompletedTasks)
+    tasks[uniqueTask].isCompleted = isCompleted
 
+    setTasks([...tasks])
+
+    if (isCompleted) {
+      setCompletedTasksCount(completedTasksCount + 1)
+    } else {
+      if (completedTasksCount <= 0) {
+        return
+      } else {
+        setCompletedTasksCount(completedTasksCount - 1)
+      }
+    }
+  }
+  
   return (
     <div>
       <Header />
@@ -80,11 +94,7 @@ export function App() {
           </div>
           <div className={styles.completed}>
             Concluídas 
-            <span>
-            {
-                tasks.length === 0 ? 0 : `${totalOfCompletedTasks} de ${tasks.length}`
-            }
-            </span>
+            <span>{tasks.length === 0 ? 0 : `${completedTasksCount} de ${tasks.length}`}</span>
           </div>
         </header>
 
@@ -96,6 +106,7 @@ export function App() {
               content={task.content} 
               isCompleted={task.isCompleted} 
               onDeleteTask={deleteTask}
+              onCompleteTask={updateCompletedTasksCount}
             />
           ))}
 
