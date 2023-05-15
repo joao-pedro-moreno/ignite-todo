@@ -35,8 +35,6 @@
 
 ## Installation
 
-#
-
 ### Clone the project
 ```cmd
 git clone https://github.com/joao-pedro-moreno/ignite-todo.git
